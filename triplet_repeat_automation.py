@@ -6,14 +6,18 @@ Calculates the number of triplet repeats for sample peak sizes outputted from Ge
 Author: Laura McCluskey
 Version 1.0.0
 '''
+import decimal
+from decimal import Decimal
 
 import pandas
 import numpy
-import xlwings
 from openpyxl import Workbook
 from openpyxl.utils.dataframe import dataframe_to_rows
-import decimal
-from decimal import Decimal
+
+# for testing/running on Linux
+LINUX = False
+if not LINUX:
+    import xlwings
 
 def get_triplets_table(gene, worksheet):
 
@@ -82,14 +86,24 @@ def match_control_samples_with_references(triplets,gene):
 
     controls=controls.filter(items=["Sample2", "Size 1", "Size 2"])
 
-    #Read in file of reference controls- xlwings used to allow reading of password protected excel spreadsheet
-    if (gene=="FRAX"):
-        triplets_excel_input=xlwings.Book("Triplet_controls_FRAX.xlsx")
-    else:
-        triplets_excel_input=xlwings.Book("Triplet_controls.xlsx")
+    # testing on linux
+    if LINUX:
+        #Read in file of reference controls- xlwings used to allow reading of password protected excel spreadsheet
+        if (gene=="FRAX"):
+            triplet_control_file = pandas.read_excel("Triplet_controls_FRAX.xlsx",sheet_name=gene)
+        else:
+            triplet_control_file = pandas.read_excel("Triplet_controls.xlsx", sheet_name=gene)
 
-    triplet_control_file=triplets_excel_input.sheets[gene]
-    triplet_control_file=triplet_control_file['A1:G1000000'].options(pandas.DataFrame,index=False, header=True).value
+    else:
+
+        #Read in file of reference controls- xlwings used to allow reading of password protected excel spreadsheet
+        if (gene=="FRAX"):
+            triplets_excel_input=xlwings.Book("Triplet_controls_FRAX.xlsx")
+        else:
+            triplets_excel_input=xlwings.Book("Triplet_controls.xlsx")
+
+        triplet_control_file=triplets_excel_input.sheets[gene]
+        triplet_control_file=triplet_control_file['A1:G1000000'].options(pandas.DataFrame,index=False, header=True).value
 
 
     #split the peaks and triplets columns
@@ -147,6 +161,7 @@ def find_closest_control_peak_to_sample_peaks(triplets_table,controls):
     Match the peak values of each of the samples to the values in this list to find the closest.
     Add columns for the number of repeats that correspond to the closest peak values.
     '''
+
     #round the values of the peak columns
     decimal.getcontext().rounding=decimal.ROUND_HALF_UP
     controls['Size 1']=controls['Size 1'].apply(lambda x: float((Decimal(str(x)).quantize(Decimal("1")))))
