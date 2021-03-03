@@ -39,7 +39,7 @@ pyinstaller triplet_repeat_automation.py
 The folder with the executable file must also contain:
 
 * A text file outputted from genemapper in asuragen format, with name in the format "worksheetid_gene.txt"
-* Two excel files "Triplet_controls.xlsx" and "Triplets_controls_FRAX.xlsx"
+* Two excel files "Triplet_controls.xlsx" and "Triplet_controls_FRAX.xlsx"
 
 
 
