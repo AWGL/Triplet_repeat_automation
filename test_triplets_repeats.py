@@ -25,7 +25,7 @@ class test_triplet_repeats(unittest.TestCase):
     def test_match_control_samples_with_references(self):
         triplets,triplets_table=get_triplets_table("gene1","tester1")
         controls,continue_program=match_control_samples_with_references(triplets, "gene1")
-        self.assertEqual(continue_program, "yes")
+        self.assertEqual(continue_program, True)
         self.assertEqual(len(controls),4)
         controls_size1=list(controls["Size 1"])
         controls_size2=list(controls["Size 2"])
@@ -39,12 +39,12 @@ class test_triplet_repeats(unittest.TestCase):
 
         triplets,triplets_table=get_triplets_table("gene1","tester2")
         controls,continue_program=match_control_samples_with_references(triplets, "gene1")
-        self.assertEqual(continue_program, "yes")
+        self.assertEqual(continue_program, True)
 
 
         triplets,triplets_table=get_triplets_table("gene1","tester3")
         controls,continue_program=match_control_samples_with_references(triplets, "gene1")
-        self.assertEqual(continue_program, "no")
+        self.assertEqual(continue_program, False)
 
 
     def test_get_closest_value(self):
