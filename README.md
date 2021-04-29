@@ -1,28 +1,23 @@
 # Triplet_repeats
 
-## Requirements:
-
-* numpy
-* pandas
-* xlrd
-* pyinstaller 
 
 
 ## Download the directory:
 
 ```
-git clone https://github.com/LauraMcCluskey7/Triplet_repeats.git 
+git clone git@github.com:AWGL/triplet_repeat_automation.git
 
 ```
 
 
-## Run from the command line:
+## Create and activate the conda environment
 
 ```
-python triplet_repeat_automation.py <gene> <worksheet_number>
+conda env create -f triplet_repeat_automation.yml
+
+conda activate triplet_repeat_automation
 
 ```
-Input the gene name and	worksheet number when prompted.
 
 
 
@@ -31,14 +26,22 @@ Input the gene name and	worksheet number when prompted.
 
 The executable file must be created on a windows platform
 
-```
-pip install pyinstaller
-```
 
 ```
 pyinstaller triplet_repeat_automation.py
 
 ```
+
+
+## Requirements:
+
+
+The folder with the executable file must also contain:
+
+* A text file outputted from genemapper in asuragen format, with name in the format "worksheetid_gene.txt"
+* Two excel files "Triplet_controls.xlsx" and "Triplet_controls_FRAX.xlsx"
+
+
 
 
 ## Run the executable:
@@ -49,12 +52,15 @@ pyinstaller triplet_repeat_automation.py
 
 
 
-## Run tests in the project root directory
 
+
+
+
+## Run the tests:
 
 ```
 
-python -m unittest discover
+python -m unittest test_triplets_repeats.py
 
 ```
 
