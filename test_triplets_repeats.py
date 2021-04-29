@@ -31,8 +31,8 @@ class test_triplet_repeats(unittest.TestCase):
         controls_size2=list(controls["Size 2"])
         controls_triplets_1=list(controls["triplets_1"])
         controls_triplets_2=list(controls["triplets_2"])
-        self.assertEqual(controls_size1, [288.7, 297.4, 296.5, 304.5])
-        self.assertEqual(controls_size2, [375.8, 323.0, 275.9, 284.1])
+        self.assertEqual(controls_size1, [289, 297, 297, 305])
+        self.assertEqual(controls_size2, [376, 323, 276, 284])
         self.assertEqual(controls_triplets_1, ['30', '33', '32', '35'])
         self.assertEqual(controls_triplets_2, ['51', '45', '25', '29'])
 
@@ -45,6 +45,10 @@ class test_triplet_repeats(unittest.TestCase):
         triplets,triplets_table=get_triplets_table("gene1","tester3")
         controls,continue_program=match_control_samples_with_references(triplets, "gene1")
         self.assertEqual(continue_program, False)
+
+        triplets,triplets_table=get_triplets_table("gene1","tester4")
+        controls,continue_program=match_control_samples_with_references(triplets, "gene1")
+        self.assertEqual(continue_program, True)
 
 
     def test_get_closest_value(self):

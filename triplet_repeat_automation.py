@@ -15,7 +15,7 @@ from openpyxl import Workbook
 from openpyxl.utils.dataframe import dataframe_to_rows
 
 # for testing/running on Linux
-LINUX = False
+LINUX = True
 if not LINUX:
     import xlwings
 
@@ -59,7 +59,6 @@ def get_triplets_table(gene, worksheet):
     triplets_table['Size 1']=triplets_table['Size 1'].apply(lambda x: None if numpy.isnan(x) else int((Decimal(str(x)).quantize(Decimal('1')))))
     triplets_table['Size 2']=triplets_table['Size 2'].apply(lambda x: None if numpy.isnan(x) else int((Decimal(str(x)).quantize(Decimal('1')))))
     triplets_table['Size 3']=triplets_table['Size 3'].apply(lambda x: None if numpy.isnan(x) else int((Decimal(str(x)).quantize(Decimal('1')))))
-
     return triplets,triplets_table
 
 def match_control_samples_with_references(triplets,gene):
@@ -117,8 +116,12 @@ def match_control_samples_with_references(triplets,gene):
     controls=new_table.filter(items=['Sample2', 'Size 1','Size 2', 'peaks_1', 'peaks_2', 'triplets_1', 'triplets_2'])
 
     #find out if the control value is within +/- 3 of the reference control
+    decimal.getcontext().rounding=decimal.ROUND_HALF_UP
     controls['peaks_1']=controls['peaks_1'].apply(lambda x: int(x))
     controls['peaks_2']=controls['peaks_2'].apply(lambda x: int(x))
+    controls['Size 1']=controls['Size 1'].apply(lambda x: int(Decimal(str(x)).quantize(Decimal('1'))))
+    controls['Size 2']=controls['Size 2'].apply(lambda x: int(Decimal(str(x)).quantize(Decimal('1'))))
+
     controls['difference in peak 1']= controls['peaks_1']-controls['Size 1']
     controls['difference in peak 2']= controls['peaks_2']-controls['Size 2']
     controls_filtered=controls[controls['difference in peak 1'].between(-3,3, inclusive=True)]
@@ -158,12 +161,6 @@ def find_closest_control_peak_to_sample_peaks(triplets_table,controls):
     Match the peak values of each of the samples to the values in this list to find the closest.
     Add columns for the number of repeats that correspond to the closest peak values.
     '''
-
-    #round the values of the peak columns
-    decimal.getcontext().rounding=decimal.ROUND_HALF_UP
-    controls['Size 1']=controls['Size 1'].apply(lambda x: float((Decimal(str(x)).quantize(Decimal('1')))))
-    controls['Size 2']=controls['Size 2'].apply(lambda x: float((Decimal(str(x)).quantize(Decimal('1')))))
-
     #make a list of the peak sizes of the controls  
     list1=list(controls['Size 1'])
     list2=list(controls['Size 2'])
@@ -272,6 +269,9 @@ def format_columns(triplets_table, controls, worksheet, gene):
     ws1.column_dimensions['G'].width=10
     ws1.column_dimensions['H'].width=10
     ws1.column_dimensions['K'].width=20
+
+    #remove blank sheet from excel output
+    wb.remove(wb['Sheet'])
 
     wb.save(worksheet+'_'+gene+'_triplets_output_excel.xlsx')
 
