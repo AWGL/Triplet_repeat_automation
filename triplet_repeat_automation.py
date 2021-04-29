@@ -15,7 +15,7 @@ from openpyxl import Workbook
 from openpyxl.utils.dataframe import dataframe_to_rows
 
 # for testing/running on Linux
-LINUX = True
+LINUX = False
 if not LINUX:
     import xlwings
 
