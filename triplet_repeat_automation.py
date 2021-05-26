@@ -4,7 +4,7 @@ triplet_repeat_automation.py
 
 Calculates the number of triplet repeats for sample peak sizes outputted from Genemapper.
 Author: Laura McCluskey
-Version 1.0.0
+Version 2.0.0
 '''
 import decimal
 from decimal import Decimal
