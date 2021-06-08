@@ -133,7 +133,7 @@ def match_control_samples_with_references(triplets,gene):
     else:
         control_pass=False
 
-    controls=controls.filter(items=['Sample2', 'Size 1','Size 2','triplets_1', 'triplets_2'])
+    controls=controls.filter(items=['Sample2', 'peaks_1','peaks_2','triplets_1', 'triplets_2', 'Size 1', 'Size 2', 'difference in peak 1', 'difference in peak 2'])
     return controls,control_pass
 
 
@@ -256,7 +256,8 @@ def format_columns(triplets_table, controls, worksheet, gene, controlpass):
     # if the controls are outside of the +/-1 check then print warning to first sheet of excel output
     if controlpass != "Pass":
         ws_fail = wb.create_sheet('Control Check Fail')
-        ws_fail['B5'] = "WARNING: The controls on this run are not within +/-1 of the values on the control file!"
+        ws_fail['B5'] = "WARNING: The controls on this run are not within +/-1 triplet of the values on the control file!"
+
 
     ws1=wb.create_sheet('Triplet_results')
     for row in dataframe_to_rows(triplets_table):
@@ -274,6 +275,23 @@ def format_columns(triplets_table, controls, worksheet, gene, controlpass):
     ws1.column_dimensions['G'].width=10
     ws1.column_dimensions['H'].width=10
     ws1.column_dimensions['K'].width=20
+
+    #add controls table to output
+    wb_controls = wb.create_sheet('Controls')
+    for row in dataframe_to_rows(controls):
+        wb_controls.append(row)
+
+    wb_controls['B1'] = "ID"
+    wb_controls['C1'] = "Reference value1"
+    wb_controls['D1'] = "Reference value2"
+    wb_controls['E1'] = "Reference triplets1"
+    wb_controls['F1'] = "Reference triplets2"    
+    wb_controls['G1'] = "Sample value1" 
+    wb_controls['H1'] = "Sample value2"
+    wb_controls['I1'] = "Difference in value1"    
+    wb_controls['J1'] = "Difference in value2"    
+
+
 
     #remove blank sheet from excel output
     wb.remove(wb['Sheet'])
@@ -296,9 +314,9 @@ if __name__ == '__main__':
 
     if gene in gene_list:
 
-        triplets,triplets_table=get_triplets_table(gene, worksheet)
+        triplets, triplets_table = get_triplets_table(gene, worksheet)
 
-        controls,control_pass=match_control_samples_with_references(triplets,gene)
+        controls, control_pass = match_control_samples_with_references(triplets,gene)
 
         triplets_table_2=find_closest_control_peak_to_sample_peaks(triplets_table,controls)
 
