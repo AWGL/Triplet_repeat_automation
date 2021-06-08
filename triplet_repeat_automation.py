@@ -3,8 +3,8 @@
 triplet_repeat_automation.py 
 
 Calculates the number of triplet repeats for sample peak sizes outputted from Genemapper.
-Author: Laura McCluskey
-Version 2.0.0
+Author: Laura McCluskey & Kalon Grimes
+Version 2.0.1
 '''
 import decimal
 from decimal import Decimal
@@ -15,7 +15,7 @@ from openpyxl import Workbook
 from openpyxl.utils.dataframe import dataframe_to_rows
 
 # for testing/running on Linux
-LINUX = False
+LINUX = True
 if not LINUX:
     import xlwings
 
@@ -129,12 +129,12 @@ def match_control_samples_with_references(triplets,gene):
 
     #only continue with program if control value is within +/- 3 of the reference control
     if (controls_filtered.shape[0] ==controls.shape[0]):
-        continue_program=True
+        control_pass=True
     else:
-        continue_program=False
+        control_pass=False
 
     controls=controls.filter(items=['Sample2', 'Size 1','Size 2','triplets_1', 'triplets_2'])
-    return controls,continue_program
+    return controls,control_pass
 
 
 def get_closest_value(x, array):
@@ -238,7 +238,7 @@ def get_number_of_triplet_repeats(triplets_table):
     return triplets_table
 
 
-def format_columns(triplets_table, controls, worksheet, gene):
+def format_columns(triplets_table, controls, worksheet, gene, controlpass):
     '''
     Format the columns in the triplets table
     Output as an excel file
@@ -253,6 +253,12 @@ def format_columns(triplets_table, controls, worksheet, gene):
 
     #output the results to an excel spreadsheet with checking boxes
     wb=Workbook()
+
+    # if the controls are outside of the +/-1 check then print warning to first sheet of excel output
+    if controlpass != "Pass":
+        ws_fail = wb.create_sheet('Control Check Fail')
+        ws_fail['B5'] = "WARNING: The controls on this run are not within +/-1 of the values on the control file!"
+
     ws1=wb.create_sheet('Triplet_results')
     for row in dataframe_to_rows(triplets_table):
         ws1.append(row)
@@ -293,21 +299,19 @@ if __name__ == '__main__':
 
         triplets,triplets_table=get_triplets_table(gene, worksheet)
 
-        controls,continue_program=match_control_samples_with_references(triplets,gene)
+        controls,control_pass=match_control_samples_with_references(triplets,gene)
 
-        #Continue program only if control values in genemapper output are within +/- 1 of the values in the controls file
-        if (continue_program==True):
+        triplets_table_2=find_closest_control_peak_to_sample_peaks(triplets_table,controls)
 
-            triplets_table_2=find_closest_control_peak_to_sample_peaks(triplets_table,controls)
+        triplets_table_3=get_number_of_triplet_repeats(triplets_table_2)
 
-            triplets_table_3=get_number_of_triplet_repeats(triplets_table_2)
-
-            format_columns(triplets_table_3, controls, worksheet, gene)
+        # output workbook as normal if passed the control range, export with fail page if not
+        if (control_pass==True):
+            format_columns(triplets_table_3, controls, worksheet, gene, "Pass")
 
         else:
-            file=open(worksheet+'_'+gene+'_triplets_output.txt', 'w')
-            file.write('The controls are not within +/- 3 of the reference controls')
-            file.close()
+            format_columns(triplets_table_3, controls, worksheet, gene, "Fail")
+
 
     else:
         file=open(worksheet+'_'+gene+'_triplets_output.txt','w')
