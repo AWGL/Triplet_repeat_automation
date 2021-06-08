@@ -249,7 +249,6 @@ def format_columns(triplets_table, controls, worksheet, gene, controlpass):
     triplets_table['Size 1']=triplets_table['Size 1'].apply(lambda x: 'NaN' if numpy.isnan(x) else int(x))
     triplets_table['Size 2']=triplets_table['Size 2'].apply(lambda x: 'NaN' if numpy.isnan(x) else int(x))
     triplets_table['Size 3']=triplets_table['Size 3'].apply(lambda x: 'NaN' if numpy.isnan(x) else int(x))
-    triplets_table.to_csv(worksheet+'_'+gene+'_triplets_output.txt', index=None, sep='\t')
 
     #output the results to an excel spreadsheet with checking boxes
     wb=Workbook()
