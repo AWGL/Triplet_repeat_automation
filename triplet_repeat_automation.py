@@ -4,7 +4,7 @@ triplet_repeat_automation.py
 
 Calculates the number of triplet repeats for sample peak sizes outputted from Genemapper.
 Author: Laura McCluskey & Kalon Grimes
-Version 2.0.1
+Version 2.0.0
 """
 
 import decimal
@@ -14,6 +14,7 @@ import pandas
 import numpy
 from openpyxl import Workbook
 from openpyxl.utils.dataframe import dataframe_to_rows
+from openpyxl.styles import PatternFill
 
 # for testing/running on Linux
 LINUX = False
@@ -257,13 +258,19 @@ def format_columns(triplets_table, controls, worksheet, gene, controlpass):
     # if the controls are outside of the +/-1 check then print warning to first sheet of excel output
     if controlpass != "Pass":
         ws_fail = wb.create_sheet('Control Check Fail')
-        ws_fail['B5'] = "WARNING: The controls on this run are not within +/-1 triplet of the values on the control file!"
-
+        ws_fail['A5'] = "WARNING: The controls on this run are not within +/-1 triplet of the values on the control file!"
+        for cell in ["A5","B5","C5","D5","E5","F5","G5","H5","I5","J5"]:
+            ws_fail[cell].fill=PatternFill("solid", fgColor = "00FF0000")
 
     ws1 = wb.create_sheet('Triplet_results')
+    if controlpass != "Pass":
+        ws1['B2'] = "WARNING: The controls on this run are not within +/-1 triplet of the values on the control file!"
+        for cell in ["A2","B2","C2","D2","E2","F2","G2","H2"]:
+            ws1[cell].fill=PatternFill("solid", fgColor = "00FF0000")
+
     for row in dataframe_to_rows(triplets_table):
         ws1.append(row)
- 
+    
     ws1['K2'] = 'Worksheet:'
     ws1['L2'] = worksheet
     ws1['K5'] = 'First checker:'
@@ -311,7 +318,7 @@ if __name__ == '__main__':
 
     #Check the gene name entered is one of the the ones in the triplet_controls file
 
-    gene_list = ['FRAX', 'FA', 'C9ORF72', 'HD', 'MDMYo(DM1)', 'SCA1', 'SCA2', 'SCA3', 'SCA6', 'gene1' ]
+    gene_list = ['FRAX', 'FA', 'C9ORF72', 'HD', 'MDMYo(DM1)', 'SCA1', 'SCA2', 'SCA3', 'SCA6']
 
     if gene in gene_list:
 
