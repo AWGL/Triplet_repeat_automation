@@ -6,7 +6,7 @@ class test_triplet_repeats(unittest.TestCase):
 
 
     def test_get_triplets_table (self):
-        triplets,triplets_table=get_triplets_table("gene1","tester1")
+        triplets,triplets_table=get_triplets_table("HD","tester1")
         self.assertEqual(len(triplets_table),7)
         self.assertEqual(len(triplets),12)
         Size1=list(triplets_table["Size 1"])
@@ -23,8 +23,8 @@ class test_triplet_repeats(unittest.TestCase):
 
 
     def test_match_control_samples_with_references(self):
-        triplets,triplets_table=get_triplets_table("gene1","tester1")
-        controls,continue_program=match_control_samples_with_references(triplets, "gene1")
+        triplets,triplets_table=get_triplets_table("HD","tester1")
+        controls,continue_program=match_control_samples_with_references(triplets, "HD")
         self.assertEqual(continue_program, True)
         self.assertEqual(len(controls),4)
         controls_size1=list(controls["Size 1"])
@@ -37,17 +37,17 @@ class test_triplet_repeats(unittest.TestCase):
         self.assertEqual(controls_triplets_2, ['51', '45', '25', '29'])
 
 
-        triplets,triplets_table=get_triplets_table("gene1","tester2")
-        controls,continue_program=match_control_samples_with_references(triplets, "gene1")
+        triplets,triplets_table=get_triplets_table("HD","tester2")
+        controls,continue_program=match_control_samples_with_references(triplets, "HD")
         self.assertEqual(continue_program, True)
 
 
-        triplets,triplets_table=get_triplets_table("gene1","tester3")
-        controls,continue_program=match_control_samples_with_references(triplets, "gene1")
+        triplets,triplets_table=get_triplets_table("HD","tester3")
+        controls,continue_program=match_control_samples_with_references(triplets, "HD")
         self.assertEqual(continue_program, False)
 
-        triplets,triplets_table=get_triplets_table("gene1","tester4")
-        controls,continue_program=match_control_samples_with_references(triplets, "gene1")
+        triplets,triplets_table=get_triplets_table("HD","tester4")
+        controls,continue_program=match_control_samples_with_references(triplets, "HD")
         self.assertEqual(continue_program, True)
 
 
@@ -59,8 +59,8 @@ class test_triplet_repeats(unittest.TestCase):
 
 
     def test_find_closest_control_peak_to_sample_peaks(self):
-        triplets,triplets_table=get_triplets_table("gene1","tester1")
-        controls,continue_program=match_control_samples_with_references(triplets, "gene1")
+        triplets,triplets_table=get_triplets_table("HD","tester1")
+        controls,continue_program=match_control_samples_with_references(triplets, "HD")
         triplets_table=find_closest_control_peak_to_sample_peaks(triplets_table,controls)
         size1=list(triplets_table["Size 1"])
         size2=list(triplets_table["Size 2"])
@@ -98,8 +98,8 @@ class test_triplet_repeats(unittest.TestCase):
 
 
     def test_get_number_of_triplet_repeats(self):
-        triplets,triplets_table=get_triplets_table("gene1","tester1")
-        controls,continue_program=match_control_samples_with_references(triplets, "gene1")
+        triplets,triplets_table=get_triplets_table("HD","tester1")
+        controls,continue_program=match_control_samples_with_references(triplets, "HD")
         triplets_table=find_closest_control_peak_to_sample_peaks(triplets_table,controls)
         triplets_table=get_number_of_triplet_repeats(triplets_table)
 
@@ -158,11 +158,11 @@ class test_triplet_repeats(unittest.TestCase):
 
 
     def test_format_columns(self):
-        triplets,triplets_table=get_triplets_table("gene1","tester1")
-        controls,continue_program=match_control_samples_with_references(triplets, "gene1")
+        triplets,triplets_table=get_triplets_table("HD","tester1")
+        controls,control_pass=match_control_samples_with_references(triplets, "HD")
         triplets_table=find_closest_control_peak_to_sample_peaks(triplets_table,controls)
         triplets_table=get_number_of_triplet_repeats(triplets_table)
-        triplets_table=format_columns(triplets_table, controls, "tester1", "gene1")
+        triplets_table=format_columns(triplets_table, controls, "tester1", "HD", "Pass")
 
         size1=list(triplets_table["Size 1"])
         size2=list(triplets_table["Size 2"])
