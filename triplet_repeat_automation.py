@@ -313,12 +313,12 @@ if __name__ == '__main__':
 
     #The user can enter the gene name and the worksheet number 
     
-    gene = input('Enter gene:')
-    worksheet = input('Enter worksheet:')
+    gene = input('Enter gene (FRAX, HD, MDMYO, SCA1, SCA2, SCA3, SCA6): ')
+    worksheet = input('Enter worksheet: ')
 
     #Check the gene name entered is one of the the ones in the triplet_controls file
 
-    gene_list = ['FRAX', 'FA', 'C9ORF72', 'HD', 'MDMYo(DM1)', 'SCA1', 'SCA2', 'SCA3', 'SCA6']
+    gene_list = ['FRAX', 'HD', 'MDMYO', 'SCA1', 'SCA2', 'SCA3', 'SCA6']
 
     if gene in gene_list:
 
